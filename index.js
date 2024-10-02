@@ -16,7 +16,7 @@ dotenv.config();
 connectDB();
 const app = express();
 app.use(cors({ // Use cors as a function
-  origin: 'http://localhost:3000',
+  origin: 'http://chat-mern-app.s3-website.eu-north-1.amazonaws.com',
  // origin:'https://food-app-skrestaurant.netlify.app',
   //origin:'https://skrestaurant-food.netlify.app', 
   optionsSuccessStatus: 200,
