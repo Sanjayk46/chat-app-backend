@@ -3,7 +3,7 @@ const User = require('../models/userModel');
 const generateToken = require('../config/generateToken');
 const nodemailer = require('nodemailer');
 const bcrypt =require ('bcryptjs');
-const cloudinary = require('./cloudinaryConfig');
+const cloudinary = require('./cloudinaryconfig');
 const PASSWORD_HASH_SALT_ROUNDS=10
 const registerUser = asyncHandler(async (req,res) =>{
    const {firstName,lastName, email, password, pic} = req.body;
