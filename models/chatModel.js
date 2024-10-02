@@ -15,7 +15,8 @@ const chatModel = mongoose.Schema(
         groupAdmin:{
             type: mongoose.Schema.Types.ObjectId,
             ref:"User"
-        }
+        },
+        isActive: { type: Boolean, default: true }, // New field to check if the group is active
     },
     {
         timestamps: true

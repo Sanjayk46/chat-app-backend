@@ -9,6 +9,7 @@ const chatRoutes = require('./Router/chatRouter');
 const messageRoutes = require('./Router/messageRouter');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const path = require('path');
+const uploadRouter = require('./contorllers/upload'); 
 const { PassThrough } = require('stream');
 
 dotenv.config();
@@ -18,7 +19,8 @@ app.use(cors({ // Use cors as a function
   origin: 'http://localhost:3000',
  // origin:'https://food-app-skrestaurant.netlify.app',
   //origin:'https://skrestaurant-food.netlify.app', 
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  credentials:true
 })); 
 
 app.use(express.json()); // to accept the json data
@@ -26,6 +28,7 @@ app.use(express.json()); // to accept the json data
 
 
 app.use('/api/user', userRoutes)
+app.use('/api/upload',uploadRouter);
 app.use('/api/chat', chatRoutes)
 app.use('/api/message', messageRoutes)
 

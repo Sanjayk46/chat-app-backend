@@ -3,10 +3,12 @@ const User = require('../models/userModel');
 const generateToken = require('../config/generateToken');
 const nodemailer = require('nodemailer');
 const bcrypt =require ('bcryptjs');
+const cloudinary = require('./cloudinaryConfig');
+const PASSWORD_HASH_SALT_ROUNDS=10
 const registerUser = asyncHandler(async (req,res) =>{
    const {firstName,lastName, email, password, pic} = req.body;
 
-   if(!name || !email || !password){
+   if(!firstName||!lastName || !email || !password){
       res.status(400);
       throw new Error('Please enter all the fields');
    }
@@ -19,7 +21,8 @@ const registerUser = asyncHandler(async (req,res) =>{
    }
 
    const user = await User.create({
-      name,
+      firstName,
+      lastName,
       email,
       password,
       pic
@@ -171,16 +174,36 @@ const resetPassword = asyncHandler(async(req,res)=>{
       res.status(500).json({ message: "Internal Server Error" });
     }
 })
-const getUserProfile = async (req, res) => {
-  const { id } = req.params;
+const validUser = async (req, res,next) => {
   try {
-    const selectedUser = await User.findOne({ _id: id }).select('-password');
-    res.status(200).json(selectedUser);
+    const validuser = await User.findById(req.user.id)
+    if (!validuser) {
+      return res.json({ message: 'user is not valid' });  // Add a return statement to stop execution
+    }
+    
+    res.status(201).json({
+      user: validuser,
+      token: req.token,
+    });
   } catch (error) {
-    res.status(500).json({ error: error });
+    res.status(500).json({ error: error.message });  // Include error message
+    console.log(error);
   }
 };
+const updateUserProfile = async(req,res,next)=>{
+  let {firstName,lastName,profilePic} = req.body
+    const user = await User.findByIdAndUpdate(req.user.id,
+      {firstName,lastName,profilePic},
+      {new:true},
+    );
+    res.status(200).send({
+      message:"user detdails updated",
+      user
+    });
+}
 
 
 
-module.exports = {registerUser, authUser, allUsers,updateProfile,forgotPassword,resetPassword,getUserProfile}
+
+
+module.exports = {registerUser, authUser, allUsers,updateProfile,forgotPassword,resetPassword,validUser,updateUserProfile}

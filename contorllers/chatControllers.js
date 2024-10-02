@@ -166,4 +166,45 @@ const removeFromGroup = asyncHandler(async (req,res)=>{
     }
 })
 
-module.exports = {accessChat, fetchChat, createGroup, renameGroup, addToGroup, removeFromGroup}
+const leaveGroupChat = asyncHandler(async (req, res) => {
+    const { chatId } = req.body;
+  
+    try {
+      // Find the chat group
+      const chat = await Chat.findOne({ _id: chatId });
+  
+      // Check if the user leaving is the group admin
+      if (chat.groupAdmin.toString() !== req.user._id.toString()) {
+        return res.status(400).send({ message: "Only the admin can leave and close the group." });
+      }
+  
+      // Mark the group as inactive
+      chat.isActive = false;
+      await chat.save();
+  
+      res.status(200).json({ message: "Group has been closed as the admin left." });
+    } catch (error) {
+      res.status(400);
+      throw new Error(error.message);
+    }
+  });
+  
+  const accessGroupChat = asyncHandler(async (req, res) => {
+    const { chatId } = req.body;
+  
+    try {
+      const chat = await Chat.findOne({ _id: chatId });
+  
+      // Check if the chat is still active
+      if (!chat.isActive) {
+        return res.status(403).send({ message: "This group chat is closed as the admin has left." });
+      }
+  
+      res.status(200).json(chat);
+    } catch (error) {
+      res.status(400);
+      throw new Error(error.message);
+    }
+  });
+
+module.exports = {accessChat, fetchChat, createGroup, renameGroup, addToGroup, removeFromGroup,accessGroupChat,leaveGroupChat}
