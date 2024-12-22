@@ -60,7 +60,7 @@ const server = app.listen(PORT, console.log(`Server started on PORT ${PORT}`.yel
 const io = require('socket.io')(server, {
     pingTimeout: 60000,
     cors: {
-        origin: 'http://chat-mern-app.s3-website.eu-north-1.amazonaws.com'
+        origin:'https://mernchatapps.netlify.app'
     }
 })
 
